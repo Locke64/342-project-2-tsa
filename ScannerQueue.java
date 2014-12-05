@@ -12,7 +12,8 @@ public class ScannerQueue implements UntypedActor {
 	
 	public void onReceive( Object message ) {
 		if( message instanceof Passenger ) {
-			//TODO
+			bodyCheck.tell( message );
+			baggageCheck.tell( ((Passenger) message).getBaggage() );
 		} else {
 			unhandled( message );
 		}
