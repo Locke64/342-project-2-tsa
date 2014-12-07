@@ -1,8 +1,10 @@
-public class Passenger {
+public class Passenger extends VerboseMessage {
+
 	private final Baggage baggage;
 	
-	public Passenger( Baggage baggage ) {
-		this.baggage = baggage;
+	public Passenger( int id ) {
+		super( "Passenger " + id );
+		this.baggage = new Baggage( id );
 	}
 	
 	public Baggage getBaggage() {
