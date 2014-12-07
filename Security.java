@@ -1,3 +1,4 @@
+import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 public class Security extends UntypedActor {
@@ -9,14 +10,14 @@ public class Security extends UntypedActor {
 		this.jail = jail;
 	}
 	
-	public void onRecieve( Object message ) {
-		if( typeof message Passenger ) {
+	public void onReceive( Object message ) {
+		if( message instanceof Passenger ) {
 			//TODO
-		} else if( typeof message FailedPassenger ) {
+		} else if( message instanceof FailedPassenger ) {
 			//TODO
-		} else if( typeof message Baggage ) {
+		} else if( message instanceof Baggage ) {
 			//TODO
-		} else if( typeof message FailedBaggage ) {
+		} else if( message instanceof FailedBaggage ) {
 			//TODO
 		} else {
 			unhandled( message );
