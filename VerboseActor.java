@@ -9,9 +9,8 @@ public abstract class VerboseActor extends UntypedActor {
 		this.name = name;
 	}
 	
-	//FIXME ActorRef doesn't have the toString() we want. Can we get the Actor somehow? otherwise take a string and do it manually.
-	protected void sendMessage( VerboseMessage message, ActorRef receiver ) {
-		System.out.println( this + " sent " + message + " to " + receiver + "." );
+	protected void sendMessage( VerboseMessage message, ActorRef receiver, String recName ) {
+		System.out.println( this + " sent " + message + " to " + recName + "." );
 		receiver.tell( message );
 	}
 	

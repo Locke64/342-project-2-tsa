@@ -6,4 +6,8 @@ public class FailedBaggage extends VerboseMessage {
 		super( baggage + " (failed)" );
 		this.baggage = baggage;
 	}
+	
+	public Baggage getBag() {
+		return baggage;
+	}
 }

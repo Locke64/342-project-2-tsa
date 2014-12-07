@@ -1,9 +1,14 @@
+import akka.actor.PoisonPill;
 import akka.actor.UntypedActor;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Jail extends UntypedActor {
+public class Jail extends VerboseActor {
 	List<FailedPassenger> passengers = new ArrayList<FailedPassenger>();
+	
+	public Jail() {
+		super( "Jail" );
+	}
 
 	public void onReceive( Object message ) {
 		if( message instanceof FailedPassenger ) {

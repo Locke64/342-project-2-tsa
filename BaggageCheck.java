@@ -14,10 +14,13 @@ public class BaggageCheck extends VerboseActor {
 	
 	public void onReceive( Object message ) {
 		if( message instanceof Baggage ) {
+			Baggage baggage = (Baggage) message;
+			receiveMessage( baggage );
+			processMessage( baggage );
 			sendMessage( gen.nextInt( 5 ) > 0 ?
-						 (Baggage) message :
-						 new FailedBaggage( (Baggage) message ),
-						 security );
+						 baggage :
+						 new FailedBaggage( baggage ),
+						 security, "Security" );
 		} else {
 			unhandled( message );
 		}

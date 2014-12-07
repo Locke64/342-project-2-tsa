@@ -14,10 +14,13 @@ public class BodyCheck extends VerboseActor {
 	
 	public void onReceive( Object message ) {
 		if( message instanceof Passenger ) {
+			Passenger passenger = (Passenger) message;
+			receiveMessage( passenger );
+			processMessage( passenger );
 			sendMessage( gen.nextInt( 5 ) > 0 ?
-						 (Passenger) message :
-						 new FailedPassenger( (Passenger) message ),
-						 security );
+						 passenger :
+						 new FailedPassenger( passenger ),
+						 security, "Security" );
 		} else {
 			unhandled( message );
 		}

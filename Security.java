@@ -1,14 +1,16 @@
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Security extends UntypedActor {
+public class Security extends VerboseActor {
 	//TODO data structures containing passengers and/or baggage waiting for the other to pass its respective scanner
 	private ArrayList<VerboseMessage> passengers;
 	private ArrayList<VerboseMessage> baggage;
 	private ActorRef jail;
 	
 	public Security( ActorRef jail ) {
+		super( "Security" );
 		this.jail = jail;
 		passengers = new ArrayList<VerboseMessage>();
 		baggage = new ArrayList<VerboseMessage>();
@@ -24,19 +26,20 @@ public class Security extends UntypedActor {
 			if (current_bag != null) {
 				baggage.remove(current_bag);
 				if (current_bag instanceof FailedBaggage) {
-					sendMessage(new FailedPassenger(my_passenger), jail);
+					sendMessage(new FailedPassenger(my_passenger), jail, "Jail");
 				} else {
-					System.out.printf("%s passed the checkpoint. Bon voyage!\n", myPassenger.toString());
+					System.out.printf("%s passed the checkpoint. Bon voyage!\n", my_passenger.toString());
+				}
 			} else {
-				passengers.add(myPassenger);
+				passengers.add(my_passenger);
 			}
 		} else if( message instanceof FailedPassenger ) {
 			//TODO
 			FailedPassenger failure = (FailedPassenger) message;
-			currentBag = checkWaitingBaggage(baggage, failure);
+			current_bag = checkWaitingBaggage(baggage, failure);
 			if (current_bag != null) {
 				baggage.remove(current_bag);
-				sendMessage(failure, jail);
+				sendMessage(failure, jail, "Jail");
 			} else {
 				passengers.add(failure);
 			}
@@ -49,7 +52,7 @@ public class Security extends UntypedActor {
 				if (current_passenger instanceof Passenger) {
 					System.out.printf("%s passed the checkpoint. Bon voyage!\n", current_passenger.toString());
 				} else {
-					sendMessage(current_passenger, jail);
+					sendMessage(current_passenger, jail, "Jail");
 				}
 			} else {
 				baggage.add(bag);
@@ -57,47 +60,49 @@ public class Security extends UntypedActor {
 		} else if( message instanceof FailedBaggage ) {
 			//TODO
 			FailedBaggage failed_bag = (FailedBaggage) message;
-			current_passenger = checkWaitingPassengers(passengers, bag);
+			current_passenger = checkWaitingPassengers(passengers, failed_bag);
 			if (current_passenger != null) {
 				passengers.remove(current_passenger);
-				System.out.printf
 				if (current_passenger instanceof Passenger) {
-					sendMessage(new FailedPassenger(current_passenger), jail);
+					sendMessage(new FailedPassenger((Passenger) current_passenger), jail, "Jail");
 				} else {
-					sendMessage(current_passenger, jail);
+					sendMessage(current_passenger, jail, "Jail");
 				}
+			}
 		} else {
 			unhandled( message );
 		}
 	}
 
 	private static VerboseMessage checkWaitingBaggage(ArrayList<VerboseMessage> p, VerboseMessage pass) {
-		ListIterator<VerboseMesage> itr = p.iterator();
+		Iterator<VerboseMessage> itr = p.iterator();
 		boolean owns_it = false;
 		VerboseMessage my_bag = null;
 		VerboseMessage temp_bag = null;
 		while(itr.hasNext()) {
-			temp_bag = itr.hasNext();
-			if (bag instanceof Baggage) {
+			temp_bag = itr.next();
+			if (temp_bag instanceof Baggage) {
+				Baggage good_bag = (Baggage) temp_bag;
 				if (pass instanceof Passenger) {
- 					owns_it = pass.owns(temp_bag);
+ 					owns_it = ((Passenger) pass).owns(good_bag);
 				} else {
-					owns_it = pass.getPassenger().owns(temp_bag);
+					owns_it = ((FailedPassenger) pass).getPassenger().owns(good_bag);
 				}
 
 				if (owns_it) {
 					my_bag = temp_bag;
 					break;
 				}
-			} else if (bag instanceof FailedBaggage) {
+			} else if (temp_bag instanceof FailedBaggage) {
+				FailedBaggage failed_bag = (FailedBaggage) temp_bag;
 				if (pass instanceof Passenger) {
-					owns_it = pass.owns(temp_bag.getBag());
+					owns_it = ((Passenger) pass).owns(failed_bag.getBag());
 				} else {
-					owns_it = pass.getPassenger().owns(temp_bag.getBag());
+					owns_it = ((FailedPassenger) pass).getPassenger().owns(failed_bag.getBag());
 				}
 
 				if (owns_it) {
-					my_bag = bag;
+					my_bag = failed_bag;
 					break;
 				}
 			}else {
@@ -108,28 +113,30 @@ public class Security extends UntypedActor {
 	}
 
 	private static VerboseMessage checkWaitingPassengers(ArrayList<VerboseMessage> passengers, VerboseMessage bag) {
-		ListIterator<VerboseMessage> itr = passengers.iterator();
+		Iterator<VerboseMessage> itr = passengers.iterator();
 		boolean owns_me = false;
 		VerboseMessage owner = null;
 		VerboseMessage temp_pass = null;
 		while(itr.hasNext()) {
 			temp_pass = itr.next();
 			if (temp_pass instanceof Passenger) {
-				if (bag instanceof Bag) {
-					owns_me = temp_pass.owns(bag);
+				Passenger good_pass = (Passenger) temp_pass;
+				if (bag instanceof Baggage) {
+					owns_me = good_pass.owns((Baggage) bag);
 				} else {
-					owns_me = temp_pass.owns(bag.getBag());
+					owns_me = good_pass.owns(((FailedBaggage) bag).getBag());
 				}
 				
 				if (owns_me) {
-					owner = temp_pass;
+					owner = good_pass;
 					break;
 				}
-			} else if (bag instanceof FailedBag) {
-				if (temp_pas instanceof Passenger) {
-					owns_me = temp_pass.owns(bag.getBag());
+			} else if (bag instanceof FailedBaggage) {
+				FailedBaggage failed_bag = (FailedBaggage) bag;
+				if (temp_pass instanceof Passenger) {
+					owns_me = ((Passenger) temp_pass).owns(failed_bag.getBag());
 				} else {
-					owns_me = temp_pass.getPassenger().owns(bag.getBag());
+					owns_me = ((FailedPassenger) temp_pass).getPassenger().owns(failed_bag.getBag());
 				}
 				
 				if (owns_me) {
@@ -139,6 +146,7 @@ public class Security extends UntypedActor {
 			} else {
 				System.err.println("Found something other than people in the list.");
 			}
-			return owner;
+		}
+		return owner;
 	}
 }
