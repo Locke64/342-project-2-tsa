@@ -74,8 +74,8 @@ public class Security extends VerboseActor {
 		}
 	}
 
-	private static VerboseMessage checkWaitingBaggage(ArrayList<VerboseMessage> p, VerboseMessage pass) {
-		Iterator<VerboseMessage> itr = p.iterator();
+	private static VerboseMessage checkWaitingBaggage(ArrayList<VerboseMessage> bags, VerboseMessage pass) {
+		Iterator<VerboseMessage> itr = bags.iterator();
 		boolean owns_it = false;
 		VerboseMessage my_bag = null;
 		VerboseMessage temp_bag = null;
@@ -131,12 +131,12 @@ public class Security extends VerboseActor {
 					owner = good_pass;
 					break;
 				}
-			} else if (bag instanceof FailedBaggage) {
-				FailedBaggage failed_bag = (FailedBaggage) bag;
-				if (temp_pass instanceof Passenger) {
-					owns_me = ((Passenger) temp_pass).owns(failed_bag.getBag());
+			} else if (temp_pass instanceof FailedPassenger) {
+				FailedPassenger failed_pass = (FailedPassenger) temp_pass;
+				if (bag instanceof Baggage) {
+					owns_me = failed_pass.getPassenger().owns((Baggage) bag);
 				} else {
-					owns_me = ((FailedPassenger) temp_pass).getPassenger().owns(failed_bag.getBag());
+					owns_me = failed_pass.getPassenger().owns(((FailedBaggage) bag).getBag());
 				}
 				
 				if (owns_me) {
