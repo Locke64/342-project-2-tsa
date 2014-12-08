@@ -21,6 +21,9 @@ public class BaggageCheck extends VerboseActor {
 						 baggage :
 						 new FailedBaggage( baggage ),
 						 security, "Security" );
+		} else if( message instanceof Shutdown ) {
+			shutdown();
+			shutdown( security, "Security" );
 		} else {
 			unhandled( message );
 		}

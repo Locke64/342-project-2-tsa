@@ -21,6 +21,9 @@ public class BodyCheck extends VerboseActor {
 						 passenger :
 						 new FailedPassenger( passenger ),
 						 security, "Security" );
+		} else if( message instanceof Shutdown ) {
+			shutdown();
+			shutdown( security, "Security" );
 		} else {
 			unhandled( message );
 		}

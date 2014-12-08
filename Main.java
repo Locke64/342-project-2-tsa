@@ -11,12 +11,6 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException,
 	ExecutionException {
-	
-		
-		//loop x amount of times -- create security give index 
-			//baggage check body check -- give that security 
-			//create scanner queue --> give both checks & index // end loop
-		//create document check --> pass linked list of scanner queues 
 		
 		int count = 3; //TODO user input
 		
@@ -73,8 +67,8 @@ public class Main {
 			documentCheck.tell( new Passenger( i ) );
 		}
 		
-		//create passengers and send them to document check 
-		//use "poison pill" to kill the document check 
+		documentCheck.tell( new Shutdown() );
+		documentCheck.tell( poisonPill() );
 		
 	}
 	

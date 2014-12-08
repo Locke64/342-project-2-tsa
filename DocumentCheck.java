@@ -37,8 +37,12 @@ public class DocumentCheck extends VerboseActor {
 				if( ++cur >= max ) cur = 0;
 			} else
 				turnAway( passenger );
-		} else if( message instanceof PoisonPill ) {
-			System.out.println( "Document Check stopped." ); //TODO just checking if poisonpill is actually received, or it automatically stops the actor.
+		} else if( message instanceof Shutdown ) {
+			shutdown();
+			while( scannerQueues.size() > 0 ) {
+				shutdown( scannerQueues.remove(), "Scanner Queue " + cur );
+				if( ++cur >= max ) cur = 0;
+			}
 		} else {
 			unhandled( message );
 		}
