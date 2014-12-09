@@ -4,23 +4,45 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Jail extends VerboseActor {
-	List<FailedPassenger> passengers = new ArrayList<FailedPassenger>();
+	private List<FailedPassenger> passengers;   // the collection of criminals
+	private shutdown_count;   		    // the countdown for shutdown
+
+	/*
+	 * Constructor for the Jail object.
+	 * 
+	 * @param line_count   the number of lines being created for the current simulation
+	 */
 	
-	public Jail() {
+	public Jail(int line_count) {
 		super( "Jail" );
+		shutdown_count = line_count;
 	}
 
 	public void onReceive( Object message ) {
 		if( message instanceof FailedPassenger ) {
-			//TODO
+			/**** handles receiving a FailedPassenger message *****/
 			System.out.println("Looks like another passenger is going to JAIL!"
 				+ "(Jail receives FailedPassenger message)");
 			FailedPassenger passenger = (FailedPassenger) message;
-			passengers.add(passenger);
+			passengers.add(passenger); // add passenger to collection
 			System.out.println("They're in the jailhouse now!(FailedPassenger added to Jail)");
-		}else if (message instanceof PoisonPill) {
-			//TODO this section is merely conjecture. Will consider other options later.
-			System.out.printf("Today, %d criminals are being sent to the bighouse!\n", passengers.size()); 
+		}else if (message instanceof Shutdown) {
+			/**** handles receiving a Shutdown message *****/
+			shutdown_count--;
+
+			// if the shutdown counter reaches 0, then every line in the simulation has
+			// shutdown. Therefore, the Jail object can begin the shutdown sequence.
+			if (shutdown_count == 0) {
+				System.out.printf("Today, %d criminals are being sent to the bighouse!\n", passengers.size());
+				Iterator<FailedPassenger> itr = passengers.iterator();
+				FailedPassenger current_passenger = null;
+				// print out each individual criminal's name for the purpose of SHAME!
+				while (itr.hasNext()) {
+					current_passenger = itr.next();
+					System.out.printf("\t%s\n", current_passenger.getPassenger().toString());
+				}
+				shutdown();
+			}
 		} else {
 			unhandled( message );
 		}
