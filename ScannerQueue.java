@@ -21,6 +21,7 @@ public class ScannerQueue extends VerboseActor {
 			sendMessage( passenger, bodyCheck, "Body Check " + id );
 			sendMessage( passenger.getBaggage(), baggageCheck, "Baggage Check " + id );
 		} else if( message instanceof Shutdown ) {
+			receiveMessage( (Shutdown) message );
 			shutdown();
 			shutdown( bodyCheck, "Body Check " + id );
 			shutdown( baggageCheck, "Baggage Check " + id );

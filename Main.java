@@ -12,12 +12,16 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException,
 	ExecutionException {
 		
-		int count = 3; //TODO user input
+		final int count = 3; //TODO user input
 		
 		final Queue<ActorRef> scannerQs = new LinkedList<ActorRef>();
 		
 		// create and start jail
-		final ActorRef jail = actorOf( Jail.class );
+		final ActorRef jail = actorOf( new UntypedActorFactory() {
+			public UntypedActor create() {
+				return new Jail( count );
+			}
+		} );
 		jail.start();
 		
 		// create security lines
@@ -26,7 +30,7 @@ public class Main {
 			// create and start security, given jail
 			final ActorRef security = actorOf( new UntypedActorFactory() {
 				public UntypedActor create() {
-					return new Security( jail );
+					return new Security( id, jail );
 				}
 			} );
 			security.start();

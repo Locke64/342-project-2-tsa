@@ -38,6 +38,7 @@ public class DocumentCheck extends VerboseActor {
 			} else
 				turnAway( passenger );
 		} else if( message instanceof Shutdown ) {
+			receiveMessage( (Shutdown) message );
 			shutdown();
 			while( scannerQueues.size() > 0 ) {
 				shutdown( scannerQueues.remove(), "Scanner Queue " + cur );

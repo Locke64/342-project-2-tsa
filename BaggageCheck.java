@@ -5,10 +5,12 @@ public class BaggageCheck extends VerboseActor {
 	
 	private Random gen = new Random();
 	
+	private int id;
 	private ActorRef security;
 	
 	public BaggageCheck( int id, ActorRef security ) {
 		super( "Baggage Check " + id );
+		this.id = id;
 		this.security = security;
 	}
 	
@@ -20,10 +22,11 @@ public class BaggageCheck extends VerboseActor {
 			sendMessage( gen.nextInt( 5 ) > 0 ?
 						 baggage :
 						 new FailedBaggage( baggage ),
-						 security, "Security" );
+						 security, "Security " + id );
 		} else if( message instanceof Shutdown ) {
+			receiveMessage( (Shutdown) message );
 			shutdown();
-			shutdown( security, "Security" );
+			shutdown( security, "Security " + id, false );
 		} else {
 			unhandled( message );
 		}

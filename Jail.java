@@ -1,8 +1,10 @@
+import static akka.actor.Actors.*;
 import akka.actor.PoisonPill;
 import akka.actor.UntypedActor;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import akka.actor.ActorRef;
 
 /*
  * This class handles the Jail for the TSA screening process. If a passenger has
@@ -13,7 +15,7 @@ import java.util.Iterator;
 
 public class Jail extends VerboseActor {
 	private List<FailedPassenger> passengers;   // the collection of criminals
-	private shutdown_count;   		    // the countdown for shutdown
+	private int shutdown_count;   		    // the countdown for shutdown
 
 	/*
 	 * Constructor for the Jail object.
@@ -24,6 +26,7 @@ public class Jail extends VerboseActor {
 	public Jail(int line_count) {
 		super( "Jail" );
 		shutdown_count = line_count;
+		passengers = new ArrayList<FailedPassenger>();
 	}
 
 	public void onReceive( Object message ) {
@@ -50,6 +53,7 @@ public class Jail extends VerboseActor {
 					System.out.printf("\t%s\n", current_passenger.getPassenger().toString());
 				}
 				shutdown();
+				getContext().stop();
 			}
 		} else {
 			unhandled( message );

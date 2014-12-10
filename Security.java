@@ -1,3 +1,4 @@
+import static akka.actor.Actors.*;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class Security extends VerboseActor {
          * @param  line_num   the line number for this Security terminal
 	 */
 	
-	public Security( ActorRef jail, int line_num ) {
-		super( "Security" + line_num);
+	public Security( int id, ActorRef jail ) {
+		super( "Security " + id );
 		this.jail = jail;
 		passengers = new ArrayList<VerboseMessage>();
 		baggage = new ArrayList<VerboseMessage>();
@@ -47,7 +48,7 @@ public class Security extends VerboseActor {
 		if( message instanceof Passenger ) {
 			/**** handles incoming passengers *****/
 			Passenger my_passenger = (Passenger) message;
-			current_bag = checkWaitingBaggage(baggage, current_passenger);
+			current_bag = checkWaitingBaggage(baggage, my_passenger);
 
 			// if a corresponding bag is found, determine where the passenger will go
 			// otherwise, place the passenger into the waiting collection
@@ -109,6 +110,7 @@ public class Security extends VerboseActor {
 				}
 			}
 		} else if(message instanceof Shutdown) {
+			receiveMessage( (Shutdown) message );
 			/**** handles the shutdown command *****/
 			shutdown_count--;  //decremant the countdown counter
 
@@ -117,7 +119,8 @@ public class Security extends VerboseActor {
 			// and pass the message to the Jail object.			
 			if (shutdown_count == 0) {
 				shutdown();
-				shutdown(jail, "Jail");
+				shutdown(jail, "Jail", false);
+				getContext().stop();
 			}
 		} else {
 			unhandled( message );
