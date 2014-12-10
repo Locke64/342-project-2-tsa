@@ -1,5 +1,13 @@
 import akka.actor.ActorRef;
 
+/*
+ * ScannerQueue receives passengers and sends the passenger to the BodyCheck and his or her baggage to the BaggageCheck.
+ * Messages Received:
+ *		Passenger from DocumentCheck
+ * Messages Sent:
+ *		Passenger to BodyCheck
+ *		Baggage to BaggageCheck
+ */
 public class ScannerQueue extends VerboseActor {
 	
 	private int id;

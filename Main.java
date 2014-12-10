@@ -12,20 +12,21 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException,
 	ExecutionException {
 		
-		final int count = 3; //TODO user input
+		final int lines = 2; //TODO user input
+		final int passengers = 5; //TODO user input
 		
 		final Queue<ActorRef> scannerQs = new LinkedList<ActorRef>();
 		
 		// create and start jail
 		final ActorRef jail = actorOf( new UntypedActorFactory() {
 			public UntypedActor create() {
-				return new Jail( count );
+				return new Jail( lines );
 			}
 		} );
 		jail.start();
 		
 		// create security lines
-		for(int index = 0; index != count; index++) {
+		for(int index = 0; index != lines; index++) {
 			final int id = index;
 			// create and start security, given jail
 			final ActorRef security = actorOf( new UntypedActorFactory() {
@@ -67,7 +68,7 @@ public class Main {
 		} );
 		documentCheck.start();
 		
-		for( int i = 0; i < 10; ++i ) {
+		for( int i = 0; i < passengers; ++i ) {
 			documentCheck.tell( new Passenger( i ) );
 		}
 		

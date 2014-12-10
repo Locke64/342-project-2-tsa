@@ -1,3 +1,4 @@
+// a Passenger message, containing the Baggage that it owns
 public class Passenger extends VerboseMessage {
 
 	private final Baggage baggage;
@@ -11,6 +12,7 @@ public class Passenger extends VerboseMessage {
 		return baggage;
 	}
 	
+	// check that the given Baggage is owned by this Passenger
 	public boolean owns( Baggage baggage ) {
 		return this.baggage == baggage;
 	}

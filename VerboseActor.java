@@ -2,6 +2,7 @@ import akka.actor.Actors;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
+// Wrapper for actors with common logging requirements
 public abstract class VerboseActor extends UntypedActor {
 
 	protected String name;

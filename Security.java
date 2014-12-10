@@ -48,6 +48,8 @@ public class Security extends VerboseActor {
 		if( message instanceof Passenger ) {
 			/**** handles incoming passengers *****/
 			Passenger my_passenger = (Passenger) message;
+			receiveMessage( my_passenger );
+			processMessage( my_passenger );
 			current_bag = checkWaitingBaggage(baggage, my_passenger);
 
 			// if a corresponding bag is found, determine where the passenger will go
@@ -66,6 +68,8 @@ public class Security extends VerboseActor {
 		} else if( message instanceof FailedPassenger ) {
 			/**** handles incoming failed passengers *****/
 			FailedPassenger failure = (FailedPassenger) message;
+			receiveMessage( failure );
+			processMessage( failure );
 			current_bag = checkWaitingBaggage(baggage, failure);
 
 			// if a bag is found, remove it from collection and send the failed passenger to jail.
@@ -79,6 +83,8 @@ public class Security extends VerboseActor {
 		} else if( message instanceof Baggage ) {
 			/**** handles incoming baggage *****/
 			Baggage bag = (Baggage) message;
+			receiveMessage( bag );
+			processMessage( bag );
 			current_passenger = checkWaitingPassengers(passengers, bag);
 
 			// if a matching passenger is found, determine where that passenger will go.
@@ -97,6 +103,8 @@ public class Security extends VerboseActor {
 		} else if( message instanceof FailedBaggage ) {
 			/**** handles incoming failed baggage *****/
 			FailedBaggage failed_bag = (FailedBaggage) message;
+			receiveMessage( failed_bag );
+			processMessage( failed_bag );
 			current_passenger = checkWaitingPassengers(passengers, failed_bag);
 
 			// if a matching passenger is found, send that passenger to jail.

@@ -1,0 +1,97 @@
+Document Check received Passenger 0.
+Document Check processed Passenger 0.
+Document Check turned away Passenger 0.							// passenger 0 turned away
+Document Check received Passenger 1.
+Document Check processed Passenger 1.
+Document Check sent Passenger 1 to Scanner Queue 0.
+Document Check received Passenger 2.
+Document Check processed Passenger 2.
+Document Check sent Passenger 2 to Scanner Queue 1.				// rotated scanner queues
+Scanner Queue 0 received Passenger 1.
+Scanner Queue 0 processed Passenger 1.
+Scanner Queue 0 sent Passenger 1 to Body Check 0.				// passenger 1 to body check
+Document Check received Passenger 3.
+Document Check processed Passenger 3.
+Document Check turned away Passenger 3.
+Document Check received Passenger 4.
+Document Check processed Passenger 4.
+Document Check sent Passenger 4 to Scanner Queue 0.
+Scanner Queue 1 received Passenger 2.
+Scanner Queue 0 sent Baggage 1 to Baggage Check 0.				// baggage 1 to baggage check
+Document Check received Shutdown.								// document check finished processing all passengers
+Document Check is shutting down.
+Document Check sent a shutdown message to Scanner Queue 1.		// sends shutdown message to all queues
+Document Check sent a shutdown message to Scanner Queue 0.
+Scanner Queue 0 received Passenger 4.							// queue 0 still had passenger 4 in its mailbox. shutdown will wait.
+Scanner Queue 0 processed Passenger 4.
+Scanner Queue 0 sent Passenger 4 to Body Check 0.
+Scanner Queue 0 sent Baggage 4 to Baggage Check 0.
+Scanner Queue 0 received Shutdown.								// now it receives shutdown message, after passengers are cleared
+Scanner Queue 0 is shutting down.
+Scanner Queue 0 sent a shutdown message to Body Check 0.		// sends shutdown to scanners, but...
+Scanner Queue 0 sent a shutdown message to Baggage Check 0.
+Baggage Check 0 received Baggage 1.								// ...they still have passengers in queue
+Baggage Check 0 processed Baggage 1.
+Baggage Check 0 sent Baggage 1 to Security 0.
+Baggage Check 0 received Baggage 4.
+Baggage Check 0 processed Baggage 4.
+Baggage Check 0 sent Baggage 4 to Security 0.
+Baggage Check 0 received Shutdown.
+Baggage Check 0 is shutting down.
+Baggage Check 0 sent a shutdown message to Security 0.
+Security 0 received Baggage 1.
+Security 0 processed Baggage 1.
+Security 0 received Baggage 4.
+Security 0 processed Baggage 4.									// security 0 has two bags, but no passengers.
+Security 0 received Shutdown.
+Body Check 0 received Passenger 1.
+Body Check 0 processed Passenger 1.
+Body Check 0 sent Passenger 1 to Security 0.
+Body Check 0 received Passenger 4.
+Body Check 0 processed Passenger 4.
+Body Check 0 sent Passenger 4 to Security 0.
+Body Check 0 received Shutdown.
+Body Check 0 is shutting down.
+Body Check 0 sent a shutdown message to Security 0.
+Security 0 received Passenger 1.								// finally receives passenger 1
+Security 0 processed Passenger 1.
+Passenger 1 passed the checkpoint. Bon voyage!					// finds passenger 1's baggage and sends them on their way
+Security 0 received Passenger 4.
+Security 0 processed Passenger 4.
+Passenger 4 passed the checkpoint. Bon voyage!
+Security 0 received Shutdown.									// both passengers and both bags have cleared, receives shutdown
+Security 0 is shutting down.
+Security 0 sent a shutdown message to Jail.						// sends status to jail, which will wait for the same message from security 1
+Scanner Queue 1 processed Passenger 2.
+Scanner Queue 1 sent Passenger 2 to Body Check 1.
+Scanner Queue 1 sent Baggage 2 to Baggage Check 1.
+Scanner Queue 1 received Shutdown.
+Scanner Queue 1 is shutting down.
+Scanner Queue 1 sent a shutdown message to Body Check 1.
+Scanner Queue 1 sent a shutdown message to Baggage Check 1.
+Body Check 1 received Passenger 2.
+Body Check 1 processed Passenger 2.
+Body Check 1 sent Passenger 2 (failed) to Security 1.			// body check for passenger 2 failed, so sends a different message to security
+Body Check 1 received Shutdown.
+Body Check 1 is shutting down.
+Body Check 1 sent a shutdown message to Security 1.
+Baggage Check 1 received Baggage 2.
+Baggage Check 1 processed Baggage 2.
+Baggage Check 1 sent Baggage 2 to Security 1.
+Baggage Check 1 received Shutdown.
+Baggage Check 1 is shutting down.
+Baggage Check 1 sent a shutdown message to Security 1.
+Security 1 received Passenger 2 (failed).
+Security 1 processed Passenger 2 (failed).
+Security 1 received Shutdown.									// received first shutdown signal, probably from Body Check
+Security 1 received Baggage 2.
+Security 1 processed Baggage 2.
+Security 1 sent Passenger 2 (failed) to Jail.					// because passenger failed body check, passenger is sent to jail
+Security 1 received Shutdown.									// second shutdown signal, probably from Baggage Check
+Security 1 is shutting down.
+Security 1 sent a shutdown message to Jail.						// second and final shutdown signal for jail
+Looks like another passenger is going to JAIL!(Jail receives FailedPassenger message)
+They're in the jailhouse now!(FailedPassenger added to Jail)
+Today, 1 criminals are being sent to the bighouse!				// after receiving shutdown signals from both security checkpoints, jail prints final occupants and shuts down
+	Passenger 2
+Jail is shutting down.

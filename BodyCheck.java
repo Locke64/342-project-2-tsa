@@ -1,6 +1,14 @@
 import akka.actor.ActorRef;
 import java.util.Random;
 
+/*
+ * BodyCheck receives passengers and determines whether they pass inspection. Failed passengers are wrapped inside a FailedPassenger message.
+ * Messages Received:
+ *		Passenger from ScannerQueue
+ * Messages Sent:
+ *		Passenger to Security
+ *		FailedPassenger to Security
+ */
 public class BodyCheck extends VerboseActor {
 	
 	private Random gen = new Random();

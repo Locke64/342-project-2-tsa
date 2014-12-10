@@ -1,6 +1,14 @@
 import akka.actor.ActorRef;
 import java.util.Random;
 
+/*
+ * BaggageCheck receives baggage and determines whether they pass inspection. Failed baggage is wrapped inside a FailedBaggage message.
+ * Messages Received:
+ *		Baggage from ScannerQueue
+ * Messages Sent:
+ *		Baggage to Security
+ *		FailedBaggage to Security
+ */
 public class BaggageCheck extends VerboseActor {
 	
 	private Random gen = new Random();
