@@ -2,6 +2,14 @@ import akka.actor.PoisonPill;
 import akka.actor.UntypedActor;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+/*
+ * This class handles the Jail for the TSA screening process. If a passenger has
+ * failed the screening process, either the passenger themselves or their baggage,
+ * that passenger is sent to the Jail to be detained. At the end of the day, all
+ * passengers detained in this fashion are sent to more permanent holding facilities.
+ */
 
 public class Jail extends VerboseActor {
 	private List<FailedPassenger> passengers;   // the collection of criminals
